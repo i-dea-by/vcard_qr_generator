@@ -46,6 +46,9 @@ def create_qr_files(
 
         qr = segno.make(vcard_str, error="L", encoding="utf-8")
 
+        # если каталога нет то создаем его
+        out_dir.mkdir(parents=True, exist_ok=True)
+
         filename = out_dir / f"{prefix}{sep}{card.displayname}{sep}{postfix}.{ext}"
         qr.save(str(filename), scale=10)
         log.info("[{}/{}] {} - {}", index, len(cards), card.displayname, filename)
