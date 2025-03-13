@@ -54,7 +54,7 @@ def create_qr_files(
         log.info("[{}/{}] {} - {}", index, len(cards), card.displayname, filename)
 
 
-if __name__ == "__main__":
+def main() -> None:
     # Импортируем модуль, имя которого указано в переменной окружения "READER". Если переменная
     # не установлена, то используется значение по умолчанию "reader_example"
     reader_module = str(config("READER", default="reader_example"))
@@ -85,6 +85,10 @@ if __name__ == "__main__":
         sep="_",
         print_vcard=False,
     )
+
+
+if __name__ == "__main__":
+    main()
 
     """
         L recovers 7% of data
