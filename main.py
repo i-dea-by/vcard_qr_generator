@@ -20,10 +20,10 @@ def create_qr_files(
     print_vcard: bool = False,
 ) -> None:
     """
-    Создает QR-коды для каждой карты в списке `cards_data` и сохраняет их в директории `out_dir`.
+    Создает QR-коды для каждой карты в списке `qr_data` и сохраняет их в директории `out_dir`.
 
     Args:
-        cards_data (list[DCvCard]): Список для создания QR-кодов.
+        qr_data (list[DCvCard]): Список для создания QR-кодов.
         prefix (str): Префикс для имени файла.
         postfix (str): Постфикс для имени файла.
         out_dir (Path): Директория для сохранения QR-кодов.
@@ -51,7 +51,7 @@ def create_qr_files(
 
         filename = out_dir / f"{prefix}{sep}{card.displayname}{sep}{postfix}.{ext}"
         qr.save(str(filename), scale=10)
-        log.info("[{}/{}] {} - {}", index, len(cards), card.displayname, filename)
+        log.info("[{}/{}] {} - {}", index, len(qr_data), card.displayname, filename)
 
 
 def main() -> None:
