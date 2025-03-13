@@ -17,7 +17,7 @@ def create_qr_files(
     out_dir: Path,
     ext: Literal["eps", "pdf", "svg", "png"] = "svg",  # другие форматы - см. документацию к segno
     sep: str = "_",
-    print_vcard: bool = False,
+    log_vcard: bool = False,
 ) -> None:
     """
     Создает QR-коды для каждой карты в списке `qr_data` и сохраняет их в директории `out_dir`.
@@ -29,7 +29,7 @@ def create_qr_files(
         out_dir (Path): Директория для сохранения QR-кодов.
         ext (Literal["eps", "pdf", "svg", "png"], optional): Расширение файла для сохранения QR-кода. По умолчанию "svg".
         sep (str, optional): Разделитель для имени файла. По умолчанию "_".
-        print_vcard (bool, optional): Флаг для вывода vCard в лог. По умолчанию False.
+        log_vcard (bool, optional): Флаг для вывода vCard в лог. По умолчанию False.
 
     Returns:
         None
@@ -41,7 +41,7 @@ def create_qr_files(
         # на iPhone когда читает такой QR в строке адреса появляются
         # ненужные символы перед запятыми
         vcard_str = vcard_str.replace("\\", "")
-        if print_vcard:
+        if log_vcard:
             log.debug("vCard: \n{}", vcard_str)
 
         qr = segno.make(vcard_str, error="L", encoding="utf-8")
@@ -83,7 +83,7 @@ def main() -> None:
         out_dir=OUT_DIR,
         ext="svg",
         sep="_",
-        print_vcard=False,
+        log_vcard=False,
     )
 
 
