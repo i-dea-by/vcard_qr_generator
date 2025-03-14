@@ -1,6 +1,6 @@
 import csv
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 import segno
 from loguru import logger as log
@@ -14,6 +14,7 @@ class csvReaderColumns:
     Соотносит колонки в файле с полями vCard.
 
     """
+
     # колонки в csv файле
     displayname_col: str
     name_col: str | None = None
@@ -47,6 +48,25 @@ class csvReaderColumns:
     def __init__(self, file_path):
         self.file_path = file_path
 
+    @staticmethod
+    def cell_or_none(row: dict, column_name: str | None) -> Any | None:
+        """
+        Возвращает содержимое ячейки для столбца column_name из строки row.
+        Если имя столбца не задано или столбец не существует  возвращает None.
+        """
+        return None if column_name is None else row.get(column_name)
+
+    @staticmethod
+    def fmt(string: str | None, del_spaces: bool = False) -> str | None:
+        """
+        Возвращает строку string без пробелов в начале и конце.
+        Если del_spaces=True, то также удаляет все пробелы внутри строки.
+        """
+        if string is not None:
+            if del_spaces:
+                return string.strip().replace(" ", "")
+            return string.strip()
+
     @classmethod
     def from_csv_file(cls, filename) -> list[DCvCard]:
         result = []
@@ -55,32 +75,32 @@ class csvReaderColumns:
             for row in reader:
                 result.append(
                     DCvCard(
-                        displayname=row[cls.displayname_col],
-                        name=None if cls.name_col is None else row[cls.name_col],
-                        email=None if cls.email_col is None else row[cls.email_col],
-                        phone=None if cls.phone_col is None else row[cls.phone_col],
-                        fax=None if cls.fax_col is None else row[cls.fax_col],
-                        videophone=None if cls.videophone_col is None else row[cls.videophone_col],
-                        memo=None if cls.memo_col is None else row[cls.memo_col],
-                        nickname=None if cls.nickname_col is None else row[cls.nickname_col],
-                        birthday=None if cls.birthday_col is None else row[cls.birthday_col],
-                        url=None if cls.url_col is None else row[cls.url_col],
-                        pobox=None if cls.pobox_col is None else row[cls.pobox_col],
-                        street=None if cls.street_col is None else row[cls.street_col],
-                        city=None if cls.city_col is None else row[cls.city_col],
-                        region=None if cls.region_col is None else row[cls.region_col],
-                        zipcode=None if cls.zipcode_col is None else row[cls.zipcode_col],
-                        country=None if cls.country_col is None else row[cls.country_col],
-                        org=None if cls.org_col is None else row[cls.org_col],
-                        lat=None if cls.lat_col is None else float(row[cls.lat_col]),
-                        lng=None if cls.lng_col is None else float(row[cls.lng_col]),
-                        source=None if cls.source_col is None else row[cls.source_col],
-                        rev=None if cls.rev_col is None else row[cls.rev_col],
-                        title=None if cls.title_col is None else row[cls.title_col],
-                        photo_uri=None if cls.photo_uri_col is None else row[cls.photo_uri_col],
-                        cellphone=None if cls.cellphone_col is None else row[cls.cellphone_col],
-                        homephone=None if cls.homephone_col is None else row[cls.homephone_col],
-                        workphone=None if cls.workphone_col is None else row[cls.workphone_col],
+                        displayname=row[cls.displayname_col].strip(),
+                        name=cls.fmt(cls.cell_or_none(row, cls.name_col)),
+                        email=cls.fmt(cls.cell_or_none(row, cls.email_col)),
+                        phone=cls.fmt(cls.cell_or_none(row, cls.phone_col)),
+                        fax=cls.fmt(cls.cell_or_none(row, cls.fax_col)),
+                        videophone=cls.fmt(cls.cell_or_none(row, cls.videophone_col)),
+                        memo=cls.fmt(cls.cell_or_none(row, cls.memo_col)),
+                        nickname=cls.fmt(cls.cell_or_none(row, cls.nickname_col)),
+                        birthday=cls.fmt(cls.cell_or_none(row, cls.birthday_col)),
+                        url=cls.fmt(cls.cell_or_none(row, cls.url_col)),
+                        pobox=cls.fmt(cls.cell_or_none(row, cls.pobox_col)),
+                        street=cls.fmt(cls.cell_or_none(row, cls.street_col)),
+                        city=cls.fmt(cls.cell_or_none(row, cls.city_col)),
+                        region=cls.fmt(cls.cell_or_none(row, cls.region_col)),
+                        zipcode=cls.fmt(cls.cell_or_none(row, cls.zipcode_col)),
+                        country=cls.fmt(cls.cell_or_none(row, cls.country_col)),
+                        org=cls.fmt(cls.cell_or_none(row, cls.org_col)),
+                        lat=cls.cell_or_none(row, cls.lat_col),
+                        lng=cls.cell_or_none(row, cls.lng_col),
+                        source=cls.fmt(cls.cell_or_none(row, cls.source_col)),
+                        rev=cls.fmt(cls.cell_or_none(row, cls.rev_col)),
+                        title=cls.fmt(cls.cell_or_none(row, cls.title_col)),
+                        photo_uri=cls.fmt(cls.cell_or_none(row, cls.photo_uri_col)),
+                        cellphone=cls.fmt(cls.cell_or_none(row, cls.cellphone_col)),
+                        homephone=cls.fmt(cls.cell_or_none(row, cls.homephone_col)),
+                        workphone=cls.fmt(cls.cell_or_none(row, cls.workphone_col)),
                     )
                 )
         return result
