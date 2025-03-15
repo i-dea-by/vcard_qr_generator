@@ -78,5 +78,7 @@ class DCvCard(BaseModel):
 
     @field_serializer("lat", "lng", when_used="json", mode="plain")
     def float_serialazer(self, value: Any) -> float | None:
-        if value is not None:
+        try:
             return float(value)
+        except ValueError:
+            return
