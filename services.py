@@ -78,7 +78,7 @@ class csvReaderColumns:
                     for field in DCvCard.model_fields.keys()
                     if getattr(cls, f"{field}_col") is not None
                 }
-                result.append(DCvCard(**vcard_data))
+                result.append(DCvCard(**vcard_data)) # type: ignore
         return result
 
     @classmethod
