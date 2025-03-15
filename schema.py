@@ -1,7 +1,16 @@
+import re
 from datetime import date
 from typing import Any, Iterable
 
 from pydantic import BaseModel, field_serializer
+
+DELIMITERS = [",", ";"]
+CLEAN = re.compile(r"[ -()]")
+
+
+def clean_string(s: str) -> str:
+    """Функция для очистки строки"""
+    return re.sub(CLEAN, "", s).strip()
 
 
 class DCvCard(BaseModel):
@@ -58,13 +67,14 @@ class DCvCard(BaseModel):
     )
     def str_or_list_serialazer(self, value: str | Iterable[str] | None) -> list | None:
         if isinstance(value, str):
-            if "," in value:
-                return value.split(",")
-            if ";" in value:
-                return value.split(";")
-            return [value]
+            # Удаляем все нежелательные символы (пробелы, дефисы, скобки и т.д.)
+            cleaned_value = re.sub(CLEAN, "", value)
+            for delimiter in DELIMITERS:
+                if delimiter in cleaned_value:
+                    return [clean_string(item) for item in cleaned_value.split(delimiter)]
+            return [cleaned_value]
         elif isinstance(value, Iterable):
-            return list(value)
+            return [clean_string(str(item)) for item in value]
 
     @field_serializer("lat", "lng", when_used="json", mode="plain")
     def float_serialazer(self, value: Any) -> float | None:
