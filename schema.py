@@ -72,13 +72,8 @@ class DCvCard(BaseModel):
         elif isinstance(value, Iterable):
             return [item.strip() for item in value]
 
-    @field_serializer(
-        "cellphone",
-        "homephone",
-        "workphone",
-        mode="plain",
-    )
-    def phones_serialazer(self, value: str | Iterable[str] | None) -> list | None:
+    @field_serializer("cellphone", "homephone", "workphone", mode="plain")
+    def phones_serializer(self, value: str | Iterable[str] | None) -> list | None:
         if isinstance(value, str):
             # Удаляем все нежелательные символы (пробелы, дефисы, скобки и т.д.)
             cleaned_value = re.sub(CLEAN, "", value)
