@@ -16,32 +16,32 @@ class csvReaderColumns:
     """
 
     # колонки в csv файле
-    displayname_col: str
-    name_col: str | None = None
-    email_col: str | None = None
-    phone_col: str | None = None
-    fax_col: str | None = None
-    videophone_col: str | None = None
-    memo_col: str | None = None
-    nickname_col: str | None = None
-    birthday_col: str | None = None
-    url_col: str | None = None
-    pobox_col: str | None = None
-    street_col: str | None = None
-    city_col: str | None = None
-    region_col: str | None = None
-    zipcode_col: str | None = None
-    country_col: str | None = None
-    org_col: str | None = None
-    lat_col: str | None = None
-    lng_col: str | None = None
-    source_col: str | None = None
-    rev_col: str | None = None
-    title_col: str | None = None
-    photo_uri_col: str | None = None
-    cellphone_col: str | None = None
-    homephone_col: str | None = None
-    workphone_col: str | None = None
+    displayname_col: str | None
+    name_col = None
+    email_col = None
+    phone_col = None
+    fax_col = None
+    videophone_col = None
+    memo_col = None
+    nickname_col = None
+    birthday_col = None
+    url_col = None
+    pobox_col = None
+    street_col = None
+    city_col = None
+    region_col = None
+    zipcode_col = None
+    country_col = None
+    org_col = None
+    lat_col = None
+    lng_col = None
+    source_col = None
+    rev_col = None
+    title_col = None
+    photo_uri_col = None
+    cellphone_col = None
+    homephone_col = None
+    workphone_col = None
 
     csv_file: str | None = None
 
@@ -68,41 +68,17 @@ class csvReaderColumns:
             return string.strip()
 
     @classmethod
-    def from_csv_file(cls, filename) -> list[DCvCard]:
+    def from_csv_file(cls, filename: str) -> list[DCvCard]:
         result = []
         with open(filename, "r", newline="", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile, delimiter=",")
             for row in reader:
-                result.append(
-                    DCvCard(
-                        displayname=row[cls.displayname_col].strip(),
-                        name=cls.fmt(cls.cell_or_none(row, cls.name_col)),
-                        email=cls.fmt(cls.cell_or_none(row, cls.email_col)),
-                        phone=cls.fmt(cls.cell_or_none(row, cls.phone_col)),
-                        fax=cls.fmt(cls.cell_or_none(row, cls.fax_col)),
-                        videophone=cls.fmt(cls.cell_or_none(row, cls.videophone_col)),
-                        memo=cls.fmt(cls.cell_or_none(row, cls.memo_col)),
-                        nickname=cls.fmt(cls.cell_or_none(row, cls.nickname_col)),
-                        birthday=cls.fmt(cls.cell_or_none(row, cls.birthday_col)),
-                        url=cls.fmt(cls.cell_or_none(row, cls.url_col)),
-                        pobox=cls.fmt(cls.cell_or_none(row, cls.pobox_col)),
-                        street=cls.fmt(cls.cell_or_none(row, cls.street_col)),
-                        city=cls.fmt(cls.cell_or_none(row, cls.city_col)),
-                        region=cls.fmt(cls.cell_or_none(row, cls.region_col)),
-                        zipcode=cls.fmt(cls.cell_or_none(row, cls.zipcode_col)),
-                        country=cls.fmt(cls.cell_or_none(row, cls.country_col)),
-                        org=cls.fmt(cls.cell_or_none(row, cls.org_col)),
-                        lat=cls.cell_or_none(row, cls.lat_col),
-                        lng=cls.cell_or_none(row, cls.lng_col),
-                        source=cls.fmt(cls.cell_or_none(row, cls.source_col)),
-                        rev=cls.fmt(cls.cell_or_none(row, cls.rev_col)),
-                        title=cls.fmt(cls.cell_or_none(row, cls.title_col)),
-                        photo_uri=cls.fmt(cls.cell_or_none(row, cls.photo_uri_col)),
-                        cellphone=cls.fmt(cls.cell_or_none(row, cls.cellphone_col)),
-                        homephone=cls.fmt(cls.cell_or_none(row, cls.homephone_col)),
-                        workphone=cls.fmt(cls.cell_or_none(row, cls.workphone_col)),
-                    )
-                )
+                vcard_data = {
+                    field: str(row.get(getattr(cls, f"{field}_col")))
+                    for field in DCvCard.model_fields.keys()
+                    if getattr(cls, f"{field}_col") is not None
+                }
+                result.append(DCvCard(**vcard_data))
         return result
 
     @classmethod
@@ -141,7 +117,7 @@ def create_qr_files(
     """
 
     for index, card in enumerate(qr_data, 1):
-        vcard_str = helpers.make_vcard_data(**card.to_dict())
+        vcard_str = helpers.make_vcard_data(**card.model_dump(exclude_unset=True))
         # перед запятыми ставит слэш, оно может почеу-то и надо, но
         # на iPhone когда читает такой QR в строке адреса появляются
         # ненужные символы перед запятыми

@@ -1,10 +1,10 @@
-from dataclasses import dataclass
 from datetime import date
-from typing import Iterable
+from typing import Any, Iterable
+
+from pydantic import BaseModel, field_serializer
 
 
-@dataclass
-class DCvCard:
+class DCvCard(BaseModel):
     """
     https://ru.wikipedia.org/wiki/VCard
     """
@@ -29,8 +29,8 @@ class DCvCard:
     zipcode: str | None = None  # Zip code (address information).
     country: str | None = None  # Country (address information).
     org: str | None = None
-    lat: float | None = None
-    lng: float | None = None
+    lat: str | float | None = None
+    lng: str | float | None = None
     source: str | None = None
     rev: str | date | None = None
     title: str | Iterable[str] | None = None
@@ -39,13 +39,34 @@ class DCvCard:
     homephone: str | Iterable[str] | None = None
     workphone: str | Iterable[str] | None = None
 
-    def __post_init__(self):
+    def model_post_init(self, __context: Any) -> None:
         if self.name is None:
             self.name = self.displayname.replace(" ", ";")
 
-    def to_dict(self):
-        _dict = {key: value for key, value in self.__dict__.items() if value is not None}
-        return _dict
+    @field_serializer(
+        "email",
+        "phone",
+        "fax",
+        "videophone",
+        "url",
+        "title",
+        "photo_uri",
+        "cellphone",
+        "homephone",
+        "workphone",
+        mode="plain",
+    )
+    def str_or_list_serialazer(self, value: str | Iterable[str] | None) -> list | None:
+        if isinstance(value, str):
+            if "," in value:
+                return value.split(",")
+            if ";" in value:
+                return value.split(";")
+            return [value]
+        elif isinstance(value, Iterable):
+            return list(value)
 
-    def __str__(self):
-        return f"<vCard {self.displayname}>"
+    @field_serializer("lat", "lng", when_used="json", mode="plain")
+    def float_serialazer(self, value: Any) -> float | None:
+        if value is not None:
+            return float(value)
