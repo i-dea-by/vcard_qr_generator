@@ -4,7 +4,7 @@ from pathlib import Path
 from decouple import config
 from loguru import logger as log
 
-from services import QRcreator
+from qr_creator import QRcreator
 
 BASE_DIR = Path().parent
 
