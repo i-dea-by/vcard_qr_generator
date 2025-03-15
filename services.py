@@ -9,11 +9,19 @@ from segno import helpers
 from schema import DCvCard
 
 
-class csvReaderColumns:
+class QRcreator:
     """
     Соотносит колонки в файле с полями vCard.
 
     """
+
+    csv_file: Path
+    out_dir: Path
+
+    prefix: str | None = None
+    postfix: str | None = None
+    ext: Literal["eps", "pdf", "svg", "png"] = "svg"  # другие форматы - см. документацию к segno
+    sep: str = "_"
 
     # колонки в csv файле
     displayname_col: str | None
@@ -43,8 +51,6 @@ class csvReaderColumns:
     homephone_col = None
     workphone_col = None
 
-    csv_file: str | None = None
-
     def __init__(self, file_path):
         self.file_path = file_path
 
@@ -68,7 +74,7 @@ class csvReaderColumns:
             return string.strip()
 
     @classmethod
-    def from_csv_file(cls, filename: str) -> list[DCvCard]:
+    def from_csv_file(cls, filename: Path) -> list[DCvCard]:
         result = []
         with open(filename, "r", newline="", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile, delimiter=",")
@@ -78,58 +84,52 @@ class csvReaderColumns:
                     for field in DCvCard.model_fields.keys()
                     if getattr(cls, f"{field}_col") is not None
                 }
-                result.append(DCvCard(**vcard_data)) # type: ignore
+                result.append(DCvCard(**vcard_data))  # type: ignore
         return result
 
     @classmethod
-    def read_csv(cls) -> list[DCvCard]:
-        if cls.csv_file:
-            return cls.from_csv_file(cls.csv_file)
-        raise ValueError(
-            "Файл с данными CSV не указан. Используйте метод from_csv_file "
-            "или установите csv_file в классе."
-        )
+    def create_qr_files(
+        cls,
+        log_vcard: bool = False,
+    ) -> None:
+        """
+        Создает QR-коды для каждой карты в списке `qr_data` и сохраняет их в директории `out_dir`.
 
+        Args:
+            qr_data (list[DCvCard]): Список для создания QR-кодов.
+            prefix (str): Префикс для имени файла.
+            postfix (str): Постфикс для имени файла.
+            out_dir (Path): Директория для сохранения QR-кодов.
+            ext (Literal["eps", "pdf", "svg", "png"], optional): Расширение файла для сохранения QR-кода. По умолчанию "svg".
+            sep (str, optional): Разделитель для имени файла. По умолчанию "_".
+            log_vcard (bool, optional): Флаг для вывода vCard в лог. По умолчанию False.
 
-def create_qr_files(
-    qr_data: list[DCvCard],
-    prefix: str,
-    postfix: str,
-    out_dir: Path,
-    ext: Literal["eps", "pdf", "svg", "png"] = "svg",  # другие форматы - см. документацию к segno
-    sep: str = "_",
-    log_vcard: bool = False,
-) -> None:
-    """
-    Создает QR-коды для каждой карты в списке `qr_data` и сохраняет их в директории `out_dir`.
+        Returns:
+            None
+        """
+        if cls.csv_file is None:
+            raise ValueError(
+                "Файл с данными CSV не указан. Используйте метод from_csv_file "
+                "или установите csv_file в классе."
+            )
+        contact_data = cls.from_csv_file(cls.csv_file)
+        for index, card in enumerate(contact_data, 1):
+            vcard_str = helpers.make_vcard_data(**card.model_dump(exclude_unset=True))
+            # перед запятыми ставит слэш, оно может почеу-то и надо, но
+            # на iPhone когда читает такой QR в строке адреса появляются
+            # ненужные символы перед запятыми
+            vcard_str = vcard_str.replace("\\", "")
+            if log_vcard:
+                log.debug("vCard: \n{}", vcard_str)
 
-    Args:
-        qr_data (list[DCvCard]): Список для создания QR-кодов.
-        prefix (str): Префикс для имени файла.
-        postfix (str): Постфикс для имени файла.
-        out_dir (Path): Директория для сохранения QR-кодов.
-        ext (Literal["eps", "pdf", "svg", "png"], optional): Расширение файла для сохранения QR-кода. По умолчанию "svg".
-        sep (str, optional): Разделитель для имени файла. По умолчанию "_".
-        log_vcard (bool, optional): Флаг для вывода vCard в лог. По умолчанию False.
+            qr = segno.make(vcard_str, error="L", encoding="utf-8")
 
-    Returns:
-        None
-    """
+            # если каталога нет то создаем его
+            cls.out_dir.mkdir(parents=True, exist_ok=True)
 
-    for index, card in enumerate(qr_data, 1):
-        vcard_str = helpers.make_vcard_data(**card.model_dump(exclude_unset=True))
-        # перед запятыми ставит слэш, оно может почеу-то и надо, но
-        # на iPhone когда читает такой QR в строке адреса появляются
-        # ненужные символы перед запятыми
-        vcard_str = vcard_str.replace("\\", "")
-        if log_vcard:
-            log.debug("vCard: \n{}", vcard_str)
-
-        qr = segno.make(vcard_str, error="L", encoding="utf-8")
-
-        # если каталога нет то создаем его
-        out_dir.mkdir(parents=True, exist_ok=True)
-
-        filename = out_dir / f"{prefix}{sep}{card.displayname}{sep}{postfix}.{ext}"
-        qr.save(str(filename), scale=10)
-        log.info("[{}/{}] {} - {}", index, len(qr_data), card.displayname, filename.name)
+            filename = (
+                cls.out_dir
+                / f"{cls.prefix}{cls.sep}{card.displayname}{cls.sep}{cls.postfix}.{cls.ext}"
+            )
+            qr.save(str(filename), scale=10)
+            log.info("[{}/{}] {} - {}", index, len(contact_data), card.displayname, filename.name)
