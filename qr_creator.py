@@ -75,6 +75,9 @@ class QRcreator:
 
     @classmethod
     def from_csv_file(cls, filename: Path) -> list[DCvCard]:
+        """
+        Считывает данные из CSV файла и создает список объектов DCvCard.
+        """
         result = []
         with open(filename, "r", newline="", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile, delimiter=",")
@@ -88,24 +91,12 @@ class QRcreator:
         return result
 
     @classmethod
-    def create_qr_files(
-        cls,
-        log_vcard: bool = False,
-    ) -> None:
+    def create_qr_files(cls, log_vcard: bool = False) -> None:
         """
-        Создает QR-коды для каждой карты в списке `qr_data` и сохраняет их в директории `out_dir`.
+        Создает QR-коды и сохраняет их в директории `out_dir`.
 
         Args:
-            qr_data (list[DCvCard]): Список для создания QR-кодов.
-            prefix (str): Префикс для имени файла.
-            postfix (str): Постфикс для имени файла.
-            out_dir (Path): Директория для сохранения QR-кодов.
-            ext (Literal["eps", "pdf", "svg", "png"], optional): Расширение файла для сохранения QR-кода. По умолчанию "svg".
-            sep (str, optional): Разделитель для имени файла. По умолчанию "_".
             log_vcard (bool, optional): Флаг для вывода vCard в лог. По умолчанию False.
-
-        Returns:
-            None
         """
         if cls.csv_file is None:
             raise ValueError(
