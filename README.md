@@ -50,6 +50,38 @@
         email_col = "Почта"
     ```
 
+    Весь набор полей vCard:
+    ```python
+        # FN - Полное имя в виде единой строки без разделителей
+    displayname: str
+    # N - фамилия; имя; отчество (дополнительные имена); префиксы; суффиксы
+    name: str | None = None
+    email: str | Iterable[str] | None = None
+    phone: str | Iterable[str] | None = None
+    fax: str | Iterable[str] | None = None
+    videophone: str | Iterable[str] | None = None
+    memo: str | None = None
+    nickname: str | None = None
+    birthday: str | date | None = None
+    url: str | Iterable[str] | None = None
+    # ADR (pobox, street, city, region, zipcode, country)
+    pobox: str | None = None  # P.O. box (address information).
+    street: str | None = None  # Street address.
+    city: str | None = None  # City (address information).
+    region: str | None = None  # Region (address information).
+    zipcode: str | None = None  # Zip code (address information).
+    country: str | None = None  # Country (address information).
+    org: str | None = None
+    lat: str | float | None = None
+    lng: str | float | None = None
+    source: str | None = None
+    rev: str | date | None = None
+    title: str | Iterable[str] | None = None
+    photo_uri: str | Iterable[str] | None = None
+    cellphone: str | Iterable[str] | None = None
+    homephone: str | Iterable[str] | None = None
+    workphone: str | Iterable[str] | None = None
+    ```
 > [!WARNING]
 > ACHTUNG!Алярма!!11 Если не используете uv, то не забудьте создать и активировать виртуальное окружение. Если конечно не ставите всё это в рутовый питон (:
 3. Запустите скрипт:
