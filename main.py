@@ -1,7 +1,6 @@
 from datetime import datetime
 from pathlib import Path
 
-from decouple import config
 from loguru import logger as log
 
 from qr_creator import QRcreator
@@ -10,19 +9,11 @@ BASE_DIR = Path().parent
 
 
 class ExampleQRcreator(QRcreator):
-    # если в .env файле указан свой файл то используется он, если нет,
-    # то используется "./example.csv". можно и прямо указать
-    # и свой путь Path("d:/work/vizitki/data.csv")
-    csv_file = Path(str(config("PATH_TO_CSV", default="./example.csv")))
+    csv_file = Path("./example.csv")
 
     # префикс и постфикс нужны для формирования имени файла .svg типа: OUT_DIR/231015_FIO_ru.svg
-    # они берутся из переменных окружения (или файла .env), если не указаны, то берутся
-    # значения по умолчанию: для префикса дата в виде YYMMDD, а для постфикса - ru
-    prefix = str(config("PREFIX", default=datetime.now().strftime("%y%m%d")))
-    postfix = str(config("POSTFIX", default="ru"))
-    # или указать напрямую
-    # prefix = "250316"
-    # postfix = "ru"
+    prefix = datetime.now().strftime("%y%m%d")
+    postfix = "ru"
 
     # папка для файлов изображений, если нужна другая, то указать напрямую
     out_dir = BASE_DIR / "out"  # или Path("d:/work/vizitki/svg/")
