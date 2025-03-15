@@ -60,12 +60,25 @@ class DCvCard(BaseModel):
         "url",
         "title",
         "photo_uri",
+        mode="plain",
+    )
+    def str_or_list_serialazer(self, value: str | Iterable[str] | None) -> list | None:
+        if isinstance(value, str):
+            # Удаляем все нежелательные символы (пробелы, дефисы, скобки и т.д.)
+            for delimiter in DELIMITERS:
+                if delimiter in value:
+                    return [item.strip() for item in value.split(delimiter)]
+            return [value]
+        elif isinstance(value, Iterable):
+            return [item.strip() for item in value]
+
+    @field_serializer(
         "cellphone",
         "homephone",
         "workphone",
         mode="plain",
     )
-    def str_or_list_serialazer(self, value: str | Iterable[str] | None) -> list | None:
+    def phones_serialazer(self, value: str | Iterable[str] | None) -> list | None:
         if isinstance(value, str):
             # Удаляем все нежелательные символы (пробелы, дефисы, скобки и т.д.)
             cleaned_value = re.sub(CLEAN, "", value)
