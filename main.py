@@ -20,13 +20,20 @@ class ExampleQRcreator(QRcreator):
     # формат изображения, другие возможные варианты - png/svg/pdf/eps
     ext = "svg"  # svg - по умолчанию
 
-
     # соотносим колонки в файле с полями vCard
     displayname_col = "ФИО"
     title_col = "Должность"
     cellphone_col = "Моб"
     workphone_col = "Городской"
     email_col = "Почта"
+
+    # соотношение (маппинг) поля vCard с колонками в csv файле строится по такому принципу:
+    # смотрим подходящее поле в vCard, например, title ("Должность" в csv файле),
+    # дописываем ему _col, получаем title_col и через = пишем то, название колонки из csv файла:
+    # title_col = "Должность"
+
+    # Для полей email, phone, fax, videophone, url, title, photo_uri, cellphone, homephone, workphone
+    # допускается несколько значений через "," или ";"
 
 
 def main() -> None:
