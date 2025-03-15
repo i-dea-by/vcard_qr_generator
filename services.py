@@ -74,7 +74,7 @@ class csvReaderColumns:
             reader = csv.DictReader(csvfile, delimiter=",")
             for row in reader:
                 vcard_data = {
-                    field: str(row.get(getattr(cls, f"{field}_col")))
+                    field: row.get(getattr(cls, f"{field}_col"))
                     for field in DCvCard.model_fields.keys()
                     if getattr(cls, f"{field}_col") is not None
                 }
