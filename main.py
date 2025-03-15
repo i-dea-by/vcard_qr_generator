@@ -17,6 +17,9 @@ class ExampleQRcreator(QRcreator):
 
     # папка для файлов изображений, если нужна другая, то указать напрямую
     out_dir = BASE_DIR / "out"  # или Path("d:/work/vizitki/svg/")
+    # формат изображения, другие возможные варианты - png/svg/pdf/eps
+    ext = "svg"  # svg - по умолчанию
+
 
     # соотносим колонки в файле с полями vCard
     displayname_col = "ФИО"
