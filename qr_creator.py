@@ -6,7 +6,7 @@ import segno
 from loguru import logger as log
 from segno import helpers
 
-from schema import DCvCard
+from schema import vCard
 
 
 class QRcreator:
@@ -74,7 +74,7 @@ class QRcreator:
             return string.strip()
 
     @classmethod
-    def from_csv_file(cls, filename: Path) -> list[DCvCard]:
+    def from_csv_file(cls, filename: Path) -> list[vCard]:
         """
         Считывает данные из CSV файла и создает список объектов DCvCard.
         """
@@ -84,10 +84,10 @@ class QRcreator:
             for row in reader:
                 vcard_data = {
                     field: row.get(getattr(cls, f"{field}_col"))
-                    for field in DCvCard.model_fields.keys()
+                    for field in vCard.model_fields.keys()
                     if getattr(cls, f"{field}_col") is not None
                 }
-                result.append(DCvCard(**vcard_data))  # type: ignore
+                result.append(vCard(**vcard_data))  # type: ignore
         return result
 
     @classmethod

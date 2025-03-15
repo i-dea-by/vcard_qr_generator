@@ -14,7 +14,7 @@ def clean_string(s: str) -> str:
     return re.sub(CLEAN, "", s)
 
 
-class DCvCard(BaseModel):
+class vCard(BaseModel):
     """
     https://ru.wikipedia.org/wiki/VCard
     """
