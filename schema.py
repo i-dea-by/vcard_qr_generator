@@ -80,7 +80,7 @@ class DCvCard(BaseModel):
             cleaned_value = re.sub(CLEAN, "", value)
             for delimiter in DELIMITERS:
                 if delimiter in cleaned_value:
-                    return [clean_string(item) for item in cleaned_value.split(delimiter)]
+                    return list(cleaned_value.split(delimiter))
             return [cleaned_value]
         elif isinstance(value, Iterable):
             return [clean_string(str(item)) for item in value]
