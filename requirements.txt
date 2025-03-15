@@ -1,5 +1,8 @@
+annotated-types==0.7.0
 colorama==0.4.6
 loguru==0.7.3
-python-decouple==3.8
-segno==1.6.1
+pydantic==2.10.6
+pydantic-core==2.27.2
+segno==1.6.6
+typing-extensions==4.12.2
 win32-setctime==1.2.0
