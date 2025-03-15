@@ -9,8 +9,9 @@ CLEAN = re.compile(r"[ -()]")
 
 
 def clean_string(s: str) -> str:
-    """Функция для очистки строки"""
-    return re.sub(CLEAN, "", s).strip()
+    """Функция для очистки строки: удаляет пробелы и символы из CLEAN"""
+
+    return re.sub(CLEAN, "", s)
 
 
 class DCvCard(BaseModel):
