@@ -40,7 +40,7 @@ def main() -> None:
     log.info("Файл с данными: {}", ExampleQRcreator.csv_file.absolute())
     log.info("Папка для .svg файлов: {}", ExampleQRcreator.out_dir.absolute())
 
-    ExampleQRcreator.create_qr_files(log_vcard=False)
+    ExampleQRcreator.create_qr_files(error_correction_level="L", log_vcard=False)
 
 
 if __name__ == "__main__":

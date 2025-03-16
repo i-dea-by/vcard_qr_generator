@@ -72,12 +72,18 @@ class QRcreator:
         return result
 
     @classmethod
-    def create_qr_files(cls, log_vcard: bool = False) -> None:
+    def create_qr_files(
+        cls,
+        error_correction_level: Literal["L", "M", "Q", "H"] = "L",
+        log_vcard: bool = False,
+    ) -> None:
         """
-        Создает QR-коды и сохраняет их в директории `out_dir`.
+        Создает QR-коды и сохраняет их
 
         Args:
-            log_vcard (bool, optional): Флаг для вывода vCard в лог. По умолчанию False.
+            error_correction_level ("L", "M", "Q", "H") : Уровень коррекции ошибок. По умолчанию "L". Подробнее см. https://segno.readthedocs.io/en/latest/api.html#segno.make.params.error
+
+            log_vcard (bool): Выводить ли в лог текст vCard. По умолчанию False.
         """
         if cls.csv_file is None:
             raise ValueError(
@@ -94,7 +100,7 @@ class QRcreator:
             if log_vcard:
                 log.debug("vCard: \n{}", vcard_str)
 
-            qr = segno.make(vcard_str, error="L", encoding="utf-8")
+            qr = segno.make(vcard_str, error=error_correction_level, encoding="utf-8")
 
             # если каталога нет то создаем его
             cls.out_dir.mkdir(parents=True, exist_ok=True)
