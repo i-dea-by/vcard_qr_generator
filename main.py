@@ -9,6 +9,7 @@ BASE_DIR = Path().parent
 
 
 class ExampleQRcreator(QRcreator):
+    # путь к файлу с данными, например Path("d:/vizitki/data.csv")
     csv_file = Path("./example.csv")
 
     # префикс и постфикс нужны для формирования имени файла .svg типа: OUT_DIR/231015_FIO_ru.svg
