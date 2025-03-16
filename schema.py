@@ -8,12 +8,6 @@ DELIMITERS = [",", ";"]
 CLEAN = re.compile(r"[ -()]")
 
 
-def clean_string(s: str) -> str:
-    """Функция для очистки строки: удаляет пробелы и символы из CLEAN"""
-
-    return re.sub(CLEAN, "", s)
-
-
 class vCard(BaseModel):
     """
     https://ru.wikipedia.org/wiki/VCard
@@ -83,7 +77,7 @@ class vCard(BaseModel):
                     return list(cleaned_value.split(delimiter))
             return [cleaned_value]
         elif isinstance(value, Iterable):
-            return [clean_string(str(item)) for item in value]
+            return [re.sub(CLEAN, "", item) for item in value]
 
     @field_serializer("lat", "lng", when_used="json", mode="plain")
     def float_serialazer(self, value: Any) -> float | None:
