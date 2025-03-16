@@ -54,25 +54,6 @@ class QRcreator:
     def __init__(self, file_path):
         self.file_path = file_path
 
-    @staticmethod
-    def cell_or_none(row: dict, column_name: str | None) -> Any | None:
-        """
-        Возвращает содержимое ячейки для столбца column_name из строки row.
-        Если имя столбца не задано или столбец не существует  возвращает None.
-        """
-        return None if column_name is None else row.get(column_name)
-
-    @staticmethod
-    def fmt(string: str | None, del_spaces: bool = False) -> str | None:
-        """
-        Возвращает строку string без пробелов в начале и конце.
-        Если del_spaces=True, то также удаляет все пробелы внутри строки.
-        """
-        if string is not None:
-            if del_spaces:
-                return string.strip().replace(" ", "")
-            return string.strip()
-
     @classmethod
     def from_csv_file(cls, filename: Path) -> list[vCard]:
         """
