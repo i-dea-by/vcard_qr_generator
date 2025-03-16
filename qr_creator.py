@@ -1,6 +1,6 @@
 import csv
 from pathlib import Path
-from typing import Any, Literal
+from typing import Literal
 
 import segno
 from loguru import logger as log
