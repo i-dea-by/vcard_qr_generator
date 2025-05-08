@@ -101,6 +101,10 @@ class QRcreator:
                 "Файл с данными CSV не указан. Используйте метод from_csv_file "
                 "или установите csv_file в классе."
             )
+        if cls.out_dir is None:
+            raise ValueError("Каталог для сохранения QR-кодов должен быть указан.")
+
+        # читаем файл с данными и создаем объекты с данными
         contact_data = cls.from_csv_file(cls.csv_file)
         for index, card in enumerate(contact_data, 1):
             vcard_str = helpers.make_vcard_data(**card.model_dump(exclude_unset=True))
