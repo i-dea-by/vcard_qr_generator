@@ -15,8 +15,8 @@ class QRcreator:
 
     """
 
-    csv_file: Path | None = None
-    out_dir: Path | None = None
+    csv_file: Path
+    out_dir: Path
 
     prefix: str | None = None
     postfix: str | None = None
@@ -96,12 +96,12 @@ class QRcreator:
 
             log_vcard (bool): Выводить ли в лог текст vCard. По умолчанию False.
         """
-        if cls.csv_file is None:
+        if not hasattr(cls, "csv_file"):
             raise ValueError(
                 "Файл с данными CSV не указан. Используйте метод from_csv_file "
                 "или установите csv_file в классе."
             )
-        if cls.out_dir is None:
+        if not hasattr(cls, "out_dir"):
             raise ValueError("Каталог для сохранения QR-кодов должен быть указан.")
 
         # читаем файл с данными и создаем объекты с данными
