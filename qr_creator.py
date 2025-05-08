@@ -66,7 +66,7 @@ class QRcreator:
                 vcard_data = {
                     field: row.get(getattr(cls, f"{field}_col"))
                     for field in vCard.model_fields.keys()
-                    if getattr(cls, f"{field}_col") is not None
+                    if getattr(cls, f"{field}_col", None) is not None
                 }
                 result.append(vCard(**vcard_data))  # type: ignore
         return result
