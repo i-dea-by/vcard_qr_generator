@@ -36,6 +36,11 @@ class ExampleQRcreator(QRcreator):
     # Для полей email, phone, fax, videophone, url, title, photo_uri, cellphone, homephone, workphone
     # допускается несколько значений через "," или ";"
 
+    # Можно перезаписать общие значения полей для всех qr типа названия организации,
+    # напрямую указав значение поля (вместо того чтоб делать отдельную колонку в .csv файле)
+    org = 'ООО "Рога и копыта"'
+    workphone = "+123456789"
+
 
 def main() -> None:
     log.info("Файл с данными: {}", ExampleQRcreator.csv_file.absolute())
