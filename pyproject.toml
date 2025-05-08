@@ -15,13 +15,11 @@ dependencies = [
 dev = []
 
 
-[tool.black]
-line-length = 100
-target-version = ["py311", "py312", "py313"]
-
-
 [tool.ruff]
-lint.select = [
+line-length = 100
+
+[tool.ruff.lint]
+select = [
   "E",  # pycodestyle errors
   "W",  # pycodestyle warnings
   "F",  # pyflakes
@@ -29,13 +27,7 @@ lint.select = [
   "C",  # flake8-comprehensions
   "B",  # flake8-bugbear
 ]
-lint.ignore = [
-  "E501",  # line too long, handled by black
-  "B008",  # do not perform function calls in argument defaults
+ignore = [
   "B009",  # Do not call `getattr` with a constant attribute value
-  "C901",  # too complex
-  "E701",  # Multiple statements on one line (colon)
+  "E402",  # module-import-not-at-top-of-file
 ]
-
-# Same as Black.
-line-length = 100
