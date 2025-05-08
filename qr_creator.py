@@ -120,9 +120,7 @@ class QRcreator:
             # если каталога нет то создаем его
             cls.out_dir.mkdir(parents=True, exist_ok=True)
 
-            filename = (
-                cls.out_dir
-                / f"{cls.prefix}{cls.sep}{card.displayname}{cls.sep}{cls.postfix}.{cls.ext}"
-            )
-            qr.save(str(filename), scale=10)
-            log.info("[{}/{}] {} - {}", index, len(contact_data), card.displayname, filename.name)
+            out_file = f"{cls.prefix}{cls.sep}{card.displayname}{cls.sep}{cls.postfix}.{cls.ext}"
+            out_path = cls.out_dir / out_file
+            qr.save(str(out_path), scale=10)
+            log.info("[{}/{}] {} - {}", index, len(contact_data), card.displayname, out_path.name)
