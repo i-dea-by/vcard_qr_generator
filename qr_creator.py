@@ -63,16 +63,22 @@ class QRcreator:
         with open(filename, "r", newline="", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile, delimiter=",")
             for row in reader:
-                vcard_data = {
-                    field: row.get(getattr(cls, f"{field}_col"))
-                    for field in vCard.model_fields.keys()
-                    if getattr(cls, f"{field}_col", None) is not None
-                }
-                # Перезапись полей указанных в классе (например, название организации)
+                vcard_data = {}
                 for field in vCard.model_fields.keys():
-                    if getattr(cls, field, None) is not None:
-                        vcard_data[field] = getattr(cls, field)
-                result.append(vCard(**vcard_data))  # type: ignore
+                    # Если значение поля задано в классе
+                    class_value = getattr(cls, field, None)
+                    if class_value is not None:
+                        vcard_data[field] = class_value
+                        continue
+
+                    # Получаем имя колонки и значение из строки
+                    col_name = getattr(cls, f"{field}_col", None)
+                    if col_name is not None:
+                        vcard_data[field] = row.get(col_name)
+
+                # Создаем объект vCard с валидацией данных
+                result.append(vCard.model_validate(vcard_data))
+
         return result
 
     @classmethod
