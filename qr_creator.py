@@ -91,7 +91,8 @@ class QRcreator:
         Создает QR-коды и сохраняет их
 
         Args:
-            error_correction_level ("L", "M", "Q", "H") : Уровень коррекции ошибок. По умолчанию "L". Подробнее см. https://segno.readthedocs.io/en/latest/api.html#segno.make.params.error
+            error_correction_level ("L", "M", "Q", "H") : Уровень коррекции ошибок.
+            По умолчанию "L". Подробнее см. https://segno.readthedocs.io/en/latest/api.html#segno.make.params.error
 
             log_vcard (bool): Выводить ли в лог текст vCard. По умолчанию False.
         """
