@@ -68,6 +68,7 @@ class QRcreator:
                     for field in vCard.model_fields.keys()
                     if getattr(cls, f"{field}_col", None) is not None
                 }
+                # Перезапись полей указанных в классе (например, название организации)
                 for field in vCard.model_fields.keys():
                     if getattr(cls, field, None) is not None:
                         vcard_data[field] = getattr(cls, field)
