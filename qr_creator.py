@@ -15,8 +15,8 @@ class QRcreator:
 
     """
 
-    csv_file: Path
-    out_dir: Path
+    csv_file: Path | None = None
+    out_dir: Path | None = None
 
     prefix: str | None = None
     postfix: str | None = None
